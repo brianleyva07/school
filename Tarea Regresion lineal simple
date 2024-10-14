@@ -1,0 +1,55 @@
+# Este es un codigo utilizado en una tarea de la materia Analisis estadistico multivariable donde haremos un modelo de regresion lineal para predecir 150 datos a partir
+# de una muestra tomada anteriormente de 50 datos.
+# Cargar datos
+Datos <- read.csv("C:/Users/2/Desktop/AEM/Tomas helicoptero.csv")
+library(ggplot2)
+
+# Gráfico básico de líneas
+plot(Datos$Numero.de.vuelo, Datos$Tiempo.de.vuelo..s., 
+     type = "l", col = "blue", lwd = 2, 
+     xlab = "Eje X", ylab = "Eje Y", 
+     main = "Gráfico de Líneas Básico")
+
+# Ajustar el modelo de regresión lineal
+modelo <- lm(Tiempo.de.vuelo..s. ~ Numero.de.vuelo, data = Datos)
+
+# Resumen del modelo
+summary(modelo)
+
+# Correlación
+cor(Datos$Numero.de.vuelo, Datos$Tiempo.de.vuelo..s.)
+
+# Gráfico con ggplot
+ggplot(data = Datos, aes(x = Numero.de.vuelo, y = Tiempo.de.vuelo..s.)) +
+  geom_point() + 
+  geom_smooth(method = "lm", formula = y ~ x) + 
+  ggtitle("Tiempo de vuelo = 1.768816 - 0.00444(Numero de tiros)")
+
+# Creación de los próximos 150 datos
+nuevos_datos <- data.frame(Numero.de.vuelo = seq(from = 51, to = 200))
+
+# Predicción para los nuevos datos
+prediccion <- predict(modelo, newdata = nuevos_datos)
+
+# Mostrar las predicciones
+print(prediccion)
+
+nuevos_datos <- cbind(nuevos_datos,prediccion = prediccion)
+# Histograma para la tarea
+hist(Datos$Tiempo.de.vuelo..s., main="Histograma de Tiempos de Vuelo", 
+     xlab="Tiempo de vuelo (segundos)", 
+     ylab="Frecuencia",
+     col="cadetblue4", 
+     border="black")
+# Grafico para ver como se comporto la prediccion
+plot(nuevos_datos$Numero.de.vuelo, nuevos_datos$prediccion,
+     type="l", 
+     col="cadetblue4", 
+     lwd=2, 
+     main="Predicción de Tiempo de Vuelo hasta 150 Lanzamientos", xlab="Número de lanzamientos", 
+     ylab="Tiempo de vuelo (segundos)")
+# Localizar en cual tiro llego a 70% menos
+tiempo_inicial <- Datos$Tiempo.de.vuelo..s.[1]
+tiempo_reducido <- 0.45 * tiempo_inicial
+paso55 <- which(nuevos_datos$prediccion <= tiempo_reducido)[1]
+paso55
